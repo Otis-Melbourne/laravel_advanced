@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\JwtAuthController;
+use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\CarController;
+use App\Http\Controllers\EnvironmentController;
+use App\Http\Controllers\MechanicController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
@@ -24,4 +28,8 @@ Route::group(['prefix' => "auth"], function(){
 Route::group(['middleware' => 'jwtauthmiddleware'], function(){
     Route::apiResource('posts', PostController::class );
     Route::apiResource('orders', OrderController::class);
+    Route::apiResource('mechanics', MechanicController::class);
+    Route::apiResource('cars', CarController::class);
+    Route::apiResource('applications', ApplicationController::class);
+    Route::apiResource('environments', EnvironmentController::class);
 });

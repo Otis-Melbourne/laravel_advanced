@@ -98,5 +98,4 @@ class JwtAuthController extends Controller
             'message' => 'User logged out successfully',
         ], 200);
     }
-
 }
