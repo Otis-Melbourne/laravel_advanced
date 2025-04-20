@@ -6,11 +6,34 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Registration;
 
-class User extends Authenticatable
+
+class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens, HasRoles;
+
+    protected static function booted(): void
+    {
+        static::created(function (User $user) {
+            Mail::to($user->email)->queue(new Registration($user));
+        });
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -45,4 +68,18 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+
+    public function posts(){
+        return $this->hasMany(Post::class);    
+    }
+
+    public function lastestPost(){
+        return $this->hasOne(Post::class)->latestOfMany();
+    }
+
+    public function oldestPost(){
+        return $this->hasOne(Post::class)->oldestOfMany();
+    }
+
 }
