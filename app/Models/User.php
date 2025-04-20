@@ -11,7 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Registration;
-
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -69,6 +69,27 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
+    public function orders(){
+        return $this->hasMany(Order::class);
+    }
+
+    public function expensiveOrder(){
+        return $this->hasOne(Order::class)->ofMany('price', 'max');
+    }
+
+    public function cheapOrder(){
+        return $this->hasOne(Order::class)->ofMany('price', 'min');
+    }
+
+    public function oldestOrder() : HasOne
+    {
+        return $this->hasOne(Order::class)->oldestOfMany();
+    }
+    
+    public function lastestOrder() : HasOne
+    {
+        return $this->hasOne(Order::class)->latestOfMany();
+    }
 
     public function posts(){
         return $this->hasMany(Post::class);    
