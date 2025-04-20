@@ -85,7 +85,7 @@ class JwtAuthController extends Controller
             'statusCode' => 200,
             'message' => 'User got profile successfully',
             'data' => [
-                'user' => new UserResource($user),
+                'user' => $user->cheapOrder,
             ],
         ], 200);
     }
